@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tech-test.fullname" . }}
+  name: {{ include "tech-test.fullname.data-api" . }}
   labels:
-    {{- include "tech-test.labels" . | nindent 4 }}
+    {{- include "tech-test.labels.data-api" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "tech-test.selectorLabels" . | nindent 6 }}
+      {{- include "tech-test.selectorLabels.data-api" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,7 +16,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tech-test.labels" . | nindent 8 }}
+        {{- include "tech-test.labels.data-api" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -25,21 +25,16 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tech-test.serviceAccountName" . }}
+      serviceAccountName: {{ include "tech-test.serviceAccountName.data-api" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
       - name: setup-permissions
         securityContext:
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop: ["all"]
-            add: ["CHOWN"]
-          runAsUser: 0
-          runAsNonRoot: false
+          {{- toYaml .Values.dataApi.initContainerSecurityContext | nindent 10 }}
         image: busybox
         command: ['sh', '-c', 'chown -R 65535:65535 /configured_path']
-        {{- with .Values.volumeMounts }}
+        {{- with .Values.dataApi.volumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -47,21 +42,23 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.dataApi.image.repository }}:{{ .Values.dataApi.image.tag }}"
+          imagePullPolicy: {{ .Values.dataApi.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          startupProbe:
+            {{- toYaml .Values.dataApi.startupProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.dataApi.readinessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
+            {{- toYaml .Values.dataApi.resources | nindent 12 }}
+          {{- with .Values.dataApi.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+      {{- with .Values.dataApi.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}

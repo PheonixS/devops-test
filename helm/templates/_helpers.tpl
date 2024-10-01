@@ -23,6 +23,14 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "tech-test.fullname.data-api" -}}
+{{ include "tech-test.fullname" . }}-data-api
+{{- end }}
+
+{{- define "tech-test.fullname.backend-api" -}}
+{{ include "tech-test.fullname" . }}-backend-api
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -33,30 +41,48 @@ Create chart name and version as used by the chart label.
 {{/*
 Common labels
 */}}
-{{- define "tech-test.labels" -}}
+{{- define "tech-test.labels.common" -}}
 helm.sh/chart: {{ include "tech-test.chart" . }}
-{{ include "tech-test.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "tech-test.labels.data-api" -}}
+{{ include "tech-test.labels.common" . }}
+{{ include "tech-test.selectorLabels.data-api" . }}
+{{- end }}
+
+{{- define "tech-test.labels.backend-api" -}}
+{{ include "tech-test.labels.common" . }}
+{{ include "tech-test.selectorLabels.backend-api" . }}
+{{- end }}
+
 {{/*
 Selector labels
 */}}
-{{- define "tech-test.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "tech-test.name" . }}
+{{- define "tech-test.selectorLabels.common" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{- define "tech-test.selectorLabels.data-api" -}}
+app.kubernetes.io/name: {{ include "tech-test.fullname.data-api" . }}
+{{ include "tech-test.selectorLabels.common" . }}
+{{- end }}
+
+{{- define "tech-test.selectorLabels.backend-api" -}}
+app.kubernetes.io/name: {{ include "tech-test.fullname.backend-api" . }}
+{{ include "tech-test.selectorLabels.common" . }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "tech-test.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "tech-test.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- define "tech-test.serviceAccountName.backend-api" -}}
+{{ include "tech-test.fullname.backend-api" . }}
 {{- end }}
+
+{{- define "tech-test.serviceAccountName.data-api" -}}
+{{ include "tech-test.fullname.data-api" . }}
 {{- end }}
