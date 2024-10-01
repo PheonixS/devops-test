@@ -1,0 +1,64 @@
+replicaCount: 1
+
+image:
+  repository: data-api
+  pullPolicy: Never # set to Never because local build cache is used
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  runAsUser: 65534
+  runAsGroup: 65534
+  fsGroup: 65534
+
+
+initContainerSecurityContext:
+  securityContext:
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: ["all"]
+      add: ["CHOWN"]
+    runAsUser: 0
+    runAsNonRoot: false
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65534
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+
+resources: {}
+
+readinessProbe:
+  httpGet:
+    path: /health_check
+    port: 5000
+
+volumes:
+  - name: data-api-config-volume
+    emptyDir: {}
+volumeMounts:
+  - name: data-api-config-volume
+    mountPath: /configured_path
+nodeSelector: {}
+tolerations: []
+affinity: {}

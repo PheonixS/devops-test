@@ -39,6 +39,9 @@ def process_api():
 
     return f"Log: {log_message}"
 
+@app.route('/health_check')
+def health_check():
+    return f"healthy"
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
