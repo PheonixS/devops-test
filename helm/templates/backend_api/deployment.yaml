@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tech-test.fullname.backend-api" . }}
+  labels:
+    {{- include "tech-test.labels.backend-api" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "tech-test.selectorLabels.backend-api" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/backend_api/secret.yaml") . | sha256sum }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tech-test.labels.backend-api" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tech-test.serviceAccountName.backend-api" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          env:
+            - name: EXTERNAL_INTEGRATION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "tech-test.fullname.backend-api" . }}-secret
+                  key: "externalIntegrationKey"
+            - name: EXTERNAL_DOWNLOAD_API_URL
+              value: {{ .Values.backendApi.externalDownloadAPIUrl | required "Please provide a value for externalDownloadAPIUrl" }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dataApi.image.repository }}:{{ .Values.dataApi.image.tag }}"
+          imagePullPolicy: {{ .Values.dataApi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          readinessProbe:
+            {{- toYaml .Values.dataApi.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.dataApi.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

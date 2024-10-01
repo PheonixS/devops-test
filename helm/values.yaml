@@ -1,5 +1,22 @@
 replicaCount: 1
 
+backendApi:
+  externalIntegrationKey: ""
+  externalDownloadAPIUrl: "http://127.0.0.1:5000/api_1"
+  image:
+    repository: backend-api
+    pullPolicy: Never # set to Never because local build cache is used
+    tag: "latest" # same as above
+  serviceAccount:
+    automount: true
+    annotations: {}
+    name: ""
+  readinessProbe:
+    httpGet:
+      path: /health_check
+      port: 5000
+  resources: {}
+
 dataApi:
   image:
     repository: data-api
