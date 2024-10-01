@@ -15,7 +15,13 @@ backendApi:
     httpGet:
       path: /health_check
       port: 5000
-  resources: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
 
 dataApi:
   image:
@@ -50,7 +56,13 @@ dataApi:
     httpGet:
       path: /health_check
       port: 5000
-  resources: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
 
 imagePullSecrets: []
 nameOverride: ""
@@ -67,7 +79,7 @@ podSecurityContext:
 securityContext:
   capabilities:
     drop:
-    - ALL
+      - ALL
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 65534
