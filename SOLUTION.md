@@ -97,7 +97,7 @@ kubectl port-forward -n victoria-logs services/victoria-logs-victoria-logs-singl
 ```
 
 - Victoria Logs configured to collect logs from all containers/nodes running in the cluster.
-- Additionally, `Data API` has a sidecar container (Fluent Bit) that sends logs from `/configured_path` directory to Victoria Logs:
+- Additionally, `Data API` has a sidecar container (Fluent Bit) that sends logs from `/configured_path` directory to Victoria Logs. This is done because mounting the host directory to the pod is not allowed in [Baseline Policy](https://kubernetes.io/docs/concepts/security/pod-security-standards/#baseline).
     - This application logs can be found using filter: `application_name: "data_api"` - [link](http://127.0.0.1:9428/select/vmui/#/?query=application_name%3A+%22data_api%22&g0.range_input=1h)
 
 ### Grafana
