@@ -37,6 +37,13 @@ dataApi:
       - name: fluent-bit-config
         mountPath: /fluent-bit/etc/fluent-bit.conf
         subPath: fluent-bit.conf
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
   serviceAccount:
     automount: true
     annotations: {}
