@@ -24,6 +24,21 @@
         name: vm
         repo_url: "https://victoriametrics.github.io/helm-charts/"
 
+    - name: Add Metrics Server chart repo
+      kubernetes.core.helm_repository:
+        name: metrics-server
+        repo_url: "https://kubernetes-sigs.github.io/metrics-server/"
+
+    - name: Deploy Metrics Server chart
+      kubernetes.core.helm:
+        name: metrics-server
+        chart_ref: metrics-server/metrics-server
+        release_namespace: kube-system
+        wait: true
+        values:
+          args:
+            - "--kubelet-insecure-tls"
+
     - name: Deploy Victoria Logs chart
       kubernetes.core.helm:
         name: victoria-logs
