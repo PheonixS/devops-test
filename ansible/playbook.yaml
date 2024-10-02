@@ -1,3 +1,4 @@
+---
 - name: Install stack
   gather_facts: false
   hosts: localhost
@@ -7,8 +8,8 @@
     - name: Check if Helm is installed
       ansible.builtin.command:
         cmd: helm version --short
-        creates: /usr/local/bin/helm
       register: helm_installed
+      changed_when: helm_installed.rc != 0
       ignore_errors: true
 
     - name: Download Helm install script
