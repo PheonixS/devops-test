@@ -52,3 +52,36 @@ kubectl port-forward -n tech-test service/technical-test-tech-test-data-api 8080
 
 ### Monitoring stack
 
+### Victoria Logs
+- Victoria Logs configured to collect logs from all containers/nodes running in the cluster.
+- Additionally, `Data API` has a sidecar container (Fluent Bit) that sends logs to Victoria Logs:
+    - This application can be found if filtered using: `application_name: "data_api"`
+
+Victoria Logs accessible via the following commands:
+
+```bash
+kubectl port-forward -n victoria-logs services/victoria-logs-victoria-logs-single-server 9428:9428
+# Access Victoria Logs at http://127.0.0.1:9428/select/vmui/
+```
+
+### Grafana
+Grafana is exposed as a service inside the cluster, if you want to access it, you can use the following commands:
+
+```bash
+# Get the password from admin user
+kubectl get secrets -n vm vm-grafana -o=jsonpath='{.data.admin-password}' | base64 -d; echo
+kubectl port-forward -n vm services/vm-grafana 8080:80
+# Access Grafana at http://localhost:8080
+```
+
+> __NOTE__: Due to the [bug in Cadvisor](https://github.com/google/cadvisor/issues/3336) some metrics for default dashboards are not available. This is why I have to install separate dashboard via Ansible.
+
+Dashboards:
+- [Pods/Containers](http://localhost:8080/d/alex_k8s_views_pods/alex-kubernetes-views-pods?orgId=1&refresh=30s&var-datasource=P4169E866C3094E38&var-cluster=.*&var-namespace=tech-test&var-pod=All&var-resolution=30s&var-job=kube-state-metrics)
+- [Nodes](http://localhost:8080/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m)
+
+Both dashboards are useful for monitoring workload and to get insights into the cluster.
+
+### How to display only resource utilization for Pods with specific label
+
+- Use filter directly in Kubectl: `kubectl top pods -A -l app.kubernetes.io/managed-by=Helm`
