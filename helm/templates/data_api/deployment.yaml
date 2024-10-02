@@ -69,8 +69,8 @@ spec:
               protocol: TCP
           startupProbe:
             {{- toYaml .Values.dataApi.startupProbe | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.dataApi.readinessProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.dataApi.livenessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.dataApi.resources | nindent 12 }}
           {{- with .Values.dataApi.volumeMounts }}

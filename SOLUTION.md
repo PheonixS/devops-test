@@ -1,5 +1,25 @@
 # Solution of the task
 
+## Checklist of tasks
+- Add a new backend api:
+  - ```/download_external_logs``` makes a call to external service's api.
+  - The external download API is dummy api, _you may leave it blank,_ however it requires $EXTERNAL_INTGERATION_KEY to authenticate
+  - the external api has multiple enviroments so the integration key varies by enviroment
+    - Done. See [Stack installation steps section](#stack-installation-steps)
+- Update the health check to fit the new architecture
+    - Done.
+    - I used startup/health probe for the `Data API` (because `/` endpoint performing some writes to the filesystem, which can be not available).
+    - I used just health probe for the `Backend API` (since it's a simple API and doesn't have any startup logic).
+    - Script also contained logic about logging the health status to the console - I don't understand the purpose of this; to check application logs check [Victoria Logs section](#victoria-logs)
+- Create helmchart for the stack
+    - Done, Helm chart is available in the `helm` folder
+- Deployment via Ansible
+    - Done, Ansible playbook is available in the `ansible` folder
+- Monitoring Kubernetes Applications - Demonstrate how to monitor the node and Pod and containers resource utilization
+    -  Done, I used Grafana and Victoria Metrics for monitoring, see [Monitoring stack section](#monitoring-stack)
+- How to display only resource utilization for Pods with specific label (k8s-app=kube-Devops)
+    - Use filter directly in Kubectl: `kubectl top pods -A -l app.kubernetes.io/managed-by=Helm`
+
 ## Prerequisites
 
 - Running k8s cluster, I used Docker Desktop
@@ -81,7 +101,3 @@ Dashboards:
 - [Nodes](http://localhost:8080/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m)
 
 Both dashboards are useful for monitoring workload and to get insights into the cluster.
-
-### How to display only resource utilization for Pods with specific label
-
-- Use filter directly in Kubectl: `kubectl top pods -A -l app.kubernetes.io/managed-by=Helm`

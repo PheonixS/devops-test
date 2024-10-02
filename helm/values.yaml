@@ -11,7 +11,7 @@ backendApi:
     automount: true
     annotations: {}
     name: ""
-  readinessProbe:
+  livenessProbe:
     httpGet:
       path: /health_check
       port: 5000
@@ -71,7 +71,7 @@ dataApi:
     failureThreshold: 2
     periodSeconds: 10
     timeoutSeconds: 5
-  readinessProbe:
+  livenessProbe:
     httpGet:
       path: /health_check
       port: 5000
