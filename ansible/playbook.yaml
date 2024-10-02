@@ -68,3 +68,11 @@
         values:
           backendApi:
             externalIntegrationKey: "{{ external_integration_key }}"
+
+    # Default provisioned dashboards were not working for me due to the bug
+    # https://github.com/google/cadvisor/issues/3336
+    - name: Create a Custom dashboard for Pods
+      kubernetes.core.k8s:
+        state: present
+        src: files/grafana-dashboard.yaml
+        namespace: vm
