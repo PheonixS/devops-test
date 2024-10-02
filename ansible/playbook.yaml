@@ -1,0 +1,30 @@
+- name: Install stack
+  gather_facts: false
+  hosts: localhost
+  vars_files:
+    - vault_{{ env }}.yaml
+  tasks:
+    - name: Check if Helm is installed
+      ansible.builtin.command:
+        cmd: helm version --short
+        creates: /usr/local/bin/helm
+      register: helm_installed
+      ignore_errors: true
+
+    - name: Download Helm install script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        dest: /tmp/get-helm-3
+        mode: '0755'
+      when: helm_installed.failed
+
+    - name: Deploy Tech test chart from local path
+      kubernetes.core.helm:
+        name: technical-test
+        chart_ref: ../helm
+        release_namespace: tech-test
+        create_namespace: true
+        wait: true
+        values:
+          backendApi:
+            externalIntegrationKey: "{{ external_integration_key }}"
