@@ -28,6 +28,15 @@ dataApi:
     repository: "data-api"
     pullPolicy: Never # set to Never because local build cache is used
     tag: "latest" # same as above
+  fluentBit:
+    image:
+      repository: "cr.fluentbit.io/fluent/fluent-bit"
+      pullPolicy: IfNotPresent
+      tag: "3.1.9"
+    extraVolumeMounts:
+      - name: fluent-bit-config
+        mountPath: /fluent-bit/etc/fluent-bit.conf
+        subPath: fluent-bit.conf
   serviceAccount:
     automount: true
     annotations: {}
@@ -35,6 +44,9 @@ dataApi:
   volumes:
     - name: data-api-config-volume
       emptyDir: {}
+    - name: fluent-bit-config
+      configMap:
+        name: data-api-fluent-bit-config
   volumeMounts:
     - name: data-api-config-volume
       mountPath: /configured_path

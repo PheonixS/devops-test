@@ -39,7 +39,24 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: fluentbit
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dataApi.fluentBit.image.repository }}:{{ .Values.dataApi.fluentBit.image.tag }}"
+          imagePullPolicy: {{ .Values.dataApi.fluentBit.image.pullPolicy }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          {{- with .Values.dataApi.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.dataApi.fluentBit.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        - name: data-api
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.dataApi.image.repository }}:{{ .Values.dataApi.image.tag }}"

@@ -30,7 +30,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: backend-api
           env:
             - name: EXTERNAL_INTEGRATION_KEY
               valueFrom:
