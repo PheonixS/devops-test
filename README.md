@@ -1,3 +1,7 @@
+# Solution from Alex
+
+[Solution](./SOLUTION.md)
+
 # DevOps Orchestration assessment
 
 The repo containes:
