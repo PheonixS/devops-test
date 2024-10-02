@@ -41,16 +41,16 @@ spec:
               value: {{ .Values.backendApi.externalDownloadAPIUrl | required "Please provide a value for externalDownloadAPIUrl" }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.dataApi.image.repository }}:{{ .Values.dataApi.image.tag }}"
-          imagePullPolicy: {{ .Values.dataApi.image.pullPolicy }}
+          image: "{{ .Values.backendApi.image.repository }}:{{ .Values.backendApi.image.tag }}"
+          imagePullPolicy: {{ .Values.backendApi.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           readinessProbe:
-            {{- toYaml .Values.dataApi.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.backendApi.readinessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.dataApi.resources | nindent 12 }}
+            {{- toYaml .Values.backendApi.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

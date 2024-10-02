@@ -4,7 +4,7 @@ backendApi:
   externalIntegrationKey: ""
   externalDownloadAPIUrl: "http://127.0.0.1:5000/api_1"
   image:
-    repository: backend-api
+    repository: "backend-api"
     pullPolicy: Never # set to Never because local build cache is used
     tag: "latest" # same as above
   serviceAccount:
@@ -25,7 +25,7 @@ backendApi:
 
 dataApi:
   image:
-    repository: data-api
+    repository: "data-api"
     pullPolicy: Never # set to Never because local build cache is used
     tag: "latest" # same as above
   serviceAccount:

@@ -62,18 +62,12 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "tech-test.selectorLabels.common" -}}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
 {{- define "tech-test.selectorLabels.data-api" -}}
 app.kubernetes.io/name: {{ include "tech-test.fullname.data-api" . }}
-{{ include "tech-test.selectorLabels.common" . }}
 {{- end }}
 
 {{- define "tech-test.selectorLabels.backend-api" -}}
 app.kubernetes.io/name: {{ include "tech-test.fullname.backend-api" . }}
-{{ include "tech-test.selectorLabels.common" . }}
 {{- end }}
 
 {{/*

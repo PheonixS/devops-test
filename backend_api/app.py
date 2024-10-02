@@ -51,7 +51,7 @@ def download_external_logs_call():
 
 @app.route('/health_check')
 def health_check():
-    return f"healthy"
+    return f"Backend API healthy"
 
 
 if __name__ == '__main__':
