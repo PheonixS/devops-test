@@ -18,6 +18,30 @@
         mode: '0755'
       when: helm_installed.failed
 
+    - name: Add Victoria Metrics chart repo
+      kubernetes.core.helm_repository:
+        name: vm
+        repo_url: "https://victoriametrics.github.io/helm-charts/"
+
+    - name: Deploy Victoria Logs chart
+      kubernetes.core.helm:
+        name: victoria-logs
+        chart_ref: vm/victoria-logs-single
+        release_namespace: victoria-logs
+        create_namespace: true
+        wait: true
+        values:
+          fluent-bit:
+            enabled: true
+
+    - name: Deploy Victoria Metrics k8s stack
+      kubernetes.core.helm:
+        name: vm
+        chart_ref: vm/victoria-metrics-k8s-stack
+        release_namespace: vm
+        create_namespace: true
+        wait: true
+
     - name: Deploy Tech test chart from local path
       kubernetes.core.helm:
         name: technical-test
