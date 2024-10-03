@@ -26,7 +26,7 @@
 
 ### Prerequisites
 
-- Running k8s cluster, I used Docker Desktop
+- Running k8s cluster, I used [Docker Desktop](https://www.docker.com/products/docker-desktop/) and double checked using [Kind](https://kind.sigs.k8s.io).
 - Kubectl is pointing to the cluster
 - Make installed, I used `GNU Make 3.81` - this is done to avoid polluting this document with long commands and was useful during development/testing
 - Ansible installed, I used version `2.17.4`
@@ -77,7 +77,6 @@ kubectl port-forward -n tech-test service/technical-test-tech-test-backend-api 8
 ```
 
 ###### Data API
-[Application logs (stdout)](http://127.0.0.1:9428/select/vmui/#/?query=kubernetes_container_name%3A+%22data-api)
 ```bash
 kubectl port-forward -n tech-test service/technical-test-tech-test-data-api 8080:80
 

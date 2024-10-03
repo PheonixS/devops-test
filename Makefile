@@ -1,10 +1,17 @@
 default:
 	@echo "Please specify a target, i.e. 'make deploy ENV=(dev|test)' or 'make images'"
 
+# Build images for backend-api and data-api
+# if the current context is kind, load the images into the kind cluster
 .PHONY: images
 images:
 	docker build -f backend_api/Dockerfile -t backend-api:latest ./backend_api
 	docker build -f data_api/Dockerfile -t data-api:latest ./data_api
+	@if kubectl config current-context | grep -q 'kind'; then \
+		echo "Detected Kind cluster, loading images into Kind cache..."; \
+		kind load docker-image backend-api:latest; \
+		kind load docker-image data-api:latest; \
+	fi
 
 # Ansible will not upgrade chart if the version is the same (and I don't want to force it)
 # So we need to bump the version before deploying, this is a workaround for local development
